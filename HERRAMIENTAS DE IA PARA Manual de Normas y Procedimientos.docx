@@ -1,0 +1,70 @@
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
+
+export default function MVPManualGenerator() {
+  const [companyName, setCompanyName] = useState("");
+  const [country, setCountry] = useState("");
+  const [sector, setSector] = useState("");
+  const [output, setOutput] = useState("");
+
+  const prompts = {
+    manual: `Genera un Manual de Normas y Procedimientos bajo los lineamientos de la norma ISO 9001:2015 para una Pyme del sector [sector] ubicada en [país], llamada [nombre de la empresa]. El manual debe incluir: objetivo, alcance, estructura organizacional, políticas de calidad, procedimientos clave por departamento (ventas, contabilidad, RRHH, producción si aplica), y mecanismos de mejora continua.`,
+    reglamento: `Crea un Reglamento Interno para una Pyme ubicada en [país] conforme a las leyes laborales vigentes del Ministerio del Trabajo. Debe incluir: derechos y deberes del trabajador, horario laboral, descansos, políticas disciplinarias, reconocimientos al buen desempeño, medidas de seguridad laboral y resolución de conflictos.`,
+    estatutos: `Redacta los estatutos legales internos de una empresa llamada [nombre de la empresa] ubicada en [país], con base en las leyes mercantiles y laborales vigentes. Incluye: denominación, objeto social, duración, domicilio, capital social, órganos de administración, normas de funcionamiento interno y disolución.`
+  };
+
+  const handleGenerate = () => {
+    const prompt = prompts.manual
+      .replace("[sector]", sector)
+      .replace("[país]", country)
+      .replace("[nombre de la empresa]", companyName);
+
+    const generated = `Prompt para IA: \n\n${prompt}\n\n(Usa este texto en herramientas como ChatGPT, Claude, Bard o Perplexity)`;
+    setOutput(generated);
+  };
+
+  return (
+    <div className="p-6 grid gap-4 max-w-3xl mx-auto">
+      <h1 className="text-2xl font-bold text-center">Generador de Prompts para Manual y Reglamento PYMEs</h1>
+      <Card>
+        <CardContent className="grid gap-4 p-4">
+          <Input
+            placeholder="Nombre de la Empresa"
+            value={companyName}
+            onChange={(e) => setCompanyName(e.target.value)}
+          />
+          <Input
+            placeholder="País (Colombia, México, Argentina)"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+          />
+          <Input
+            placeholder="Sector de la Empresa (Comercio, Servicios, etc.)"
+            value={sector}
+            onChange={(e) => setSector(e.target.value)}
+          />
+          <Button onClick={handleGenerate}>Generar Prompt de Manual</Button>
+        </CardContent>
+      </Card>
+      {output && (
+        <Textarea
+          className="w-full h-96"
+          value={output}
+          readOnly
+        />
+      )}
+      <div className="text-sm text-center mt-6">
+        <p>
+          También puedes usar IA gratuitas para pegar este prompt: <br />
+          <a href="https://chat.openai.com" target="_blank" className="text-blue-600 underline">ChatGPT Free</a> | 
+          <a href="https://bard.google.com" target="_blank" className="text-blue-600 underline">Bard/Gemini</a> | 
+          <a href="https://claude.ai" target="_blank" className="text-blue-600 underline">Claude.ai</a> | 
+          <a href="https://www.perplexity.ai" target="_blank" className="text-blue-600 underline">Perplexity.ai</a>
+        </p>
+      </div>
+    </div>
+  );
+}
